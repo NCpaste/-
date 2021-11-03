@@ -12,6 +12,7 @@
 #include <cmath>
 using namespace std;
 const int max_size = 100;
+const int INF = 0x3f3f3f3f;
 #define for(i, a, b) for(int i = a; i <= b; i ++)
 
 struct sp {
@@ -60,7 +61,7 @@ void show_ful(sp* p)
 	return;
 }
 
-void ff(sp* a, sp* b)
+void ff(sp* a, sp* b, int ch)
 {
 	// a empty, b full
 	sp* t1 = a->next;
@@ -77,32 +78,37 @@ void ff(sp* a, sp* b)
 	cin >> siz;
 
 	if(op == 1){
+        if(ch == 1){ // ff
+            t1 = find_t1_ff(t1, siz);
 
-		t1 = find_t1_ff(t1, siz);
-		//while(t1){
-			// traverse the empty node	
-			// different start
-			//if(t1->size >= siz){
-				// different end
-			
-				// locate position for new full node
-				while(t2->next) t2 = t2->next;
-				// traverse the full node
-				sp* ne = new(sp);
-				init(ne, t2->st, siz, pid, true, NULL, NULL);
-				t1->st = t1->st + siz;
-				t1->size = t1->size - siz;
-				if(t1->size == 0){
-					sp* ah = t1->ahead;
-					ah->next = t1->next;
-					free(t1);
-				}
-				// full node 
-				mknew(ne, t2->next, NULL);
-			}
-			t1 = t1->next;
-		}
+        }else if(ch == 2){ // CFF
+            t1 = find_t1_cff(t1, siz);
+        }else if(ch == 3){ // BF
+            t1 = find_t1_bf(t1, siz);
+        }else if(ch == 4){ // WF
+            t1 = find_t1_wf(t1, siz);
+        }
+        
+            // locate position for new full node
+            while(t2->next) t2 = t2->next;
+            // traverse the full node
+            
+            sp* ne = new(sp);
+            init(ne, t2->st, siz, pid, true, NULL, NULL);
+            t1->st = t1->st + siz;
+            t1->size = t1->size - siz;
+            
+            if(t1->size == 0){
+                sp* ah = t1->ahead;
+                ah->next = t1->next;
+                free(t1);
+            }
+            // full node 
+            mknew(ne, t2->next, NULL);
+            t1 = t1->next;
+            
 		cout << "Allocate successfully !";
+        
 	}else if(op == 2){
 		// reclaim
 		// traverse the full node
@@ -142,6 +148,32 @@ void ff(sp* a, sp* b)
 		}
 	}
 
+}
+
+sp* find_t1_bf(sp* a, int size){
+    sp* temp;
+    int minn = INF;
+    while(a){
+        if(minn > a->size - size) {
+            minn = a->size - size;
+            temp = a;
+        }
+        a = a->next;
+    }
+    return temp;
+}
+
+sp* find_t1_wf(sp* a, int size){
+    sp*temp;
+    int maxx = -INF;
+    while(a){
+        if(minn > a->size - size){
+            minn = a->size - size;
+            temp = a;
+        }
+        a = a->next
+    }
+    return temp;
 }
 
 sp* find_t1_ff(sp* t1, int size){
