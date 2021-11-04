@@ -1,0 +1,17 @@
+
+// git help
+
+git branch -m old_name new_name
+
+git remote -v
+git remote add origin http....
+git remote remove origin
+
+git pull origin 
+git pull http
+git push origin HEAD
+git push origin HEAD:master
+
+git clone https://github.com/NCpaste/Depository
+
+
