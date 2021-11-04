@@ -24,26 +24,22 @@ struct sp {
 	sp* ahead;
 };
 
-int op1;
+int op;
 sp* emp;
 sp* ful;
 
-//void init(sp* p)
-//{
-//	p->st = 0;
-//	p->siz = 1000;
-//	p->flag = 0;
-//	p->next = NULL;
-//	p->ahead = NULL;
-//}
-
 void show_emp(sp* p)
 {
-	sp* temp = p->next;
-	printf("~~~~~~~~~~~~~~~\n");
+	printf("\nShow emp");
+	sp* temp = p;
+	if(!temp) {
+		printf("Emp Zero\n");
+		return ;
+	}
+	printf(" ---------- ---------- ---------- \n");
 	printf("address		length		flag\n");
 	while(temp){
-		printf("%-7d		%-6d		%-4d\n", temp->st, temp->siz, temp->flag);
+		printf("%-7d		%-6d		%-4d\n", temp->st, temp->size, temp->flag);
 		temp = temp->next;
 	}
 	return;
@@ -51,103 +47,19 @@ void show_emp(sp* p)
 
 void show_ful(sp* p)
 {
-	sp* temp = p->next;
-	printf("~~~~~~~~~~~~~~~\n");
+	printf("\nShow ful");
+	sp* temp = p;
+	if(!temp){
+		printf("Ful Zero\n");
+		return ;
+	}
+	printf(" ---------- ---------- ----------\n");
 	printf("address		length		pid\n");
 	while(temp){
-		printf("%-7d		%-6d		%-3d\n", temp->st, temp->siz, temp->pid);
+		printf("%-7d		%-6d		%-3d\n", temp->st, temp->size, temp->pid);
 		temp = temp->next;
 	}
 	return;
-}
-
-void ff(sp* a, sp* b, int ch)
-{
-	// a empty, b full
-	sp* t1 = a->next;
-	sp* t2 = b;
-	show_emp(a);
-	show_ful(b);
-	int op, pid, siz;
-	printf("1.allocate	2.reclaim	0.exit\n");
-	printf("select:");
-	cin >> op;
-	printf("pid:");
-	cin >> pid;
-	printf("size:");
-	cin >> siz;
-
-	if(op == 1){
-        if(ch == 1){ // ff
-            t1 = find_t1_ff(t1, siz);
-
-        }else if(ch == 2){ // CFF
-            t1 = find_t1_cff(t1, siz);
-        }else if(ch == 3){ // BF
-            t1 = find_t1_bf(t1, siz);
-        }else if(ch == 4){ // WF
-            t1 = find_t1_wf(t1, siz);
-        }
-        
-            // locate position for new full node
-            while(t2->next) t2 = t2->next;
-            // traverse the full node
-            
-            sp* ne = new(sp);
-            init(ne, t2->st, siz, pid, true, NULL, NULL);
-            t1->st = t1->st + siz;
-            t1->size = t1->size - siz;
-            
-            if(t1->size == 0){
-                sp* ah = t1->ahead;
-                ah->next = t1->next;
-                free(t1);
-            }
-            // full node 
-            mknew(ne, t2->next, NULL);
-            t1 = t1->next;
-            
-		cout << "Allocate successfully !";
-        
-	}else if(op == 2){
-		// reclaim
-		// traverse the full node
-		int fla = 0;
-		while(t2){
-			if(t2->pid == pid)
-			{
-				fla = 1;
-				// find claimed node
-				sp* tmep = t2;
-				// find the space around t2, ta, tb
-				while(t1->st < t2->st) t1 = t1->next;
-				sp* ta = t1->next;
-				sp* tb = t1;
-
-				// reclaim t2
-				if(ta->st + ta.size == temp.st){
-					// change ta
-					ta->size = temp->size + ta->size;
-					free(temp);
-				}else if(temp->st + temp->size == tb->st){
-					// change tb
-					tb->st = temp->st;
-					tb->size = temp->size + tb->size;
-					free(temp);
-				}else{
-					// mk new empty node
-					mknew(temp, ta, tb);
-				}
-			}
-			t2 = t2->next;
-		}
-		if(fla == 0) {
-			printf("Wrong , Please cin again\n");
-		}else {
-			printf("Claim Successfully\n");
-		}
-	}
-
 }
 
 sp* find_t1_bf(sp* a, int size){
@@ -167,11 +79,11 @@ sp* find_t1_wf(sp* a, int size){
     sp*temp;
     int maxx = -INF;
     while(a){
-        if(minn > a->size - size){
-            minn = a->size - size;
+        if(maxx > a->size - size){
+            maxx = a->size - size;
             temp = a;
         }
-        a = a->next
+        a = a->next;
     }
     return temp;
 }
@@ -185,7 +97,7 @@ sp* find_t1_ff(sp* t1, int size){
     return NULL;
 }
 
-void mknew(sp* a, sp* b, sp* c){
+void insert(sp* a, sp* b, sp* c){
 	// insert a into b,c
 	if(b){
 		a->next = b->next;
@@ -210,24 +122,120 @@ void init(sp* a, int st, int size, int pid, bool flag, sp* b, sp* c){
 	return; 
 }
 
+void ff(sp* a, sp* b, int ch)
+{
+	printf("\nFunction ff\n");
+	// a empty, b full
+	sp* t1 = a->next;
+	sp* t2 = b;
+	int op, pid, siz;
+	printf("1.allocate	2.reclaim	0.exit\n");
+	printf("select:");
+	cin >> op;
+	printf("pid:");
+	cin >> pid;
+
+	if(op == 1){
+		printf("size:");
+		cin >> siz;
+        
+        if(ch == 1){ // ff
+            t1 = find_t1_ff(t1, siz);
+        }else if(ch == 2){ // CFF
+            t1 = find_t1_ff(t1, siz);
+        }else if(ch == 3){ // BF
+            t1 = find_t1_bf(t1, siz);
+        }else if(ch == 4){ // WF
+            t1 = find_t1_wf(t1, siz);
+        }
+        
+        // locate position for new full node
+        while(t2->next) t2 = t2->next;
+        // traverse the full node
+            
+        sp* ne = new(sp);
+        init(ne, t2->st, siz, pid, true, NULL, NULL);
+        t1->st = t1->st + siz;
+        t1->size = t1->size - siz;
+            
+        if(t1->size == 0){
+            sp* ah = t1->ahead;
+            ah->next = t1->next;
+            free(t1);
+        }
+        // full node 
+	    insert(ne, t2, NULL);
+        t1 = t1->next;
+            
+		cout << "Allocate successfully !\n";
+		show_emp(a);
+		show_ful(b);    
+	}else if(op == 2){
+		// reclaim
+		printf("Reclaim\n");
+		// traverse the full node
+		int fla = 0;
+		while(t2){
+			if(t2->pid == pid)
+			{
+				printf("Loc successfully\n");
+				fla = 1;
+				// find claimed node
+				sp* temp = t2;
+				// find the space around t2, ta, tb
+				while(t1->st < t2->st) t1 = t1->next;
+				sp* ta = t1->next;
+				sp* tb = t1;
+
+				// reclaim t2
+				if(ta->st + ta->size == temp->st){
+					// change ta
+					ta->size = temp->size + ta->size;
+					free(temp);
+				}else if(temp->st + temp->size == tb->st){
+					// change tb
+					tb->st = temp->st;
+					tb->size = temp->size + tb->size;
+					free(temp);
+				}else{
+					// mk new empty node
+					insert(temp, ta, tb);
+				}
+			}
+			t2 = t2->next;
+		}
+		if(fla == 0) {
+			printf("Wrong , Please cin again\n");
+		}else {
+			printf("Claim Successfully\n");
+		}
+	}else {
+		return ;
+	}
+}
+
 int main()
 {
 	emp = new(sp);
-	ful = NULL;
-	init(emp, 0, 1000, 0, false, NULL, NULL);
-	printf("Dynamic partition allocation algorithm simulation \n");
-	printf("1.FF	2.CFF	3.BF	4.WF\n");
-	printf("algorithm select : ");
-	cin >> op1;
-	if(op1 == 1){
-		ff(emp, ful);
-	}else if(op1 == 2){
-		cff(emp, ful);
-	}else if(op1 == 3){
-		bf(emp. ful);
-	}else if(op1 == 4){
-		wf(emp, ful);
+	emp->next = new(sp);
+	ful = new(sp);
+	// void init(sp* a, int st, int size, int pid, bool flag, sp* b, sp* c)
+	init(emp, 0, 0, -1, false, NULL, emp->next);
+	init(emp->next, 0, 1000, 0, false, emp, NULL);
+	init(ful, 0, 0, -1, false, NULL, NULL);
+	show_emp(emp);
+	show_ful(ful);  
+	while(1)
+	{
+		printf("\nDynamic partition allocation algorithm simulation \n");
+		printf("1.FF	2.CFF	3.BF	4.WF\n");
+		printf("algorithm select : ");
+		
+		cin >> op;
+		ff(emp, ful, op);
 	}
+	show_emp(emp);
+	show_ful(ful);
 }
 
 
